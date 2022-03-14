@@ -26,6 +26,12 @@ export default class NewBill {
       onNavigate
     })
   }
+
+  // fonction de test
+  toto = (number) => {
+    return number + 1
+  }
+
   handleChangeFile = e => {
     e.preventDefault()
     const filePath = e.target.value.split(/\\/g)

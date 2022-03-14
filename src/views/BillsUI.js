@@ -29,7 +29,7 @@ const rows = (data) => {
       return 0;
     });
     // data(a, b).sort((a.date < b.date) ? 1 : (a.date > b.date) ? -1 : 0)
-
+    // data.sort = (a, b) => ((a.date < b.date) ? 1 : (a.date > b.date) ? -1 : 0)
   }
   
   return (data && data.length) ? data.map(bill => row(bill)).join("") : ""
