@@ -21,7 +21,7 @@ class Api {
     return jsonOrThrowIfError(await fetch(`${this.baseUrl}${url}`, {headers, method: 'PATCH', body: data}))
   }
 }
-
+/*************************************************************************************** */
 const getHeaders = (headers) => {
   const h = { }
   if (!headers.noContentType) h['Content-Type'] = 'application/json'
@@ -29,7 +29,7 @@ const getHeaders = (headers) => {
   if (jwt && !headers.noAuthorization) h['Authorization'] = `Bearer ${jwt}`
   return {...h, ...headers}
 }
-
+/*************************************************************************************** */
 class ApiEntity {
   constructor({key, api}) {
     this.key = key;
