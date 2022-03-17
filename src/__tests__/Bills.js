@@ -2,24 +2,12 @@
  * @jest-environment jsdom
  */
 
-import {
-  screen,
-  waitFor
-} from "@testing-library/dom"
+import { screen, waitFor } from "@testing-library/dom"
 import BillsUI from "../views/BillsUI.js"
-import {
-  bills
-} from "../fixtures/bills.js"
-import {
-  ROUTES_PATH
-} from "../constants/routes.js";
-import {
-  localStorageMock
-} from "../__mocks__/localStorage.js";
-import userEvent from '@testing-library/user-event';
-import {
-  handleClickIconEye
-} from "../containers/Bills.js";
+import { bills } from "../fixtures/bills.js"
+import { ROUTES_PATH } from "../constants/routes.js";
+import { localStorageMock } from "../__mocks__/localStorage.js";
+import { handleClickIconEye } from "../containers/Bills.js";
 import router from "../app/Router.js";
 
 describe("Given I am connected as an employee", () => {
@@ -77,17 +65,19 @@ describe("Given I am connected as an employee", () => {
     })
   })
   /******************************************************************** */
-  // describe('When I am on Bills page and there are no bills', () => {
-  //   test('Then, no bills should be shown', () => {
-  //     document.body.innerHTML = BillsUI({
-  //       data: bills
-  //     })
-  //     const billsList = screen.queryByTestId("tbody")
-
-  //     expect(billsList).toBeFalsy()
-
-  //   })
-  // })
+  describe('When I am on Bills page and there are no bills', () => {
+    test('Then, no bills should be shown', () => {
+      document.body.innerHTML = BillsUI({
+        data: bills
+      })
+      const billsList = screen.queryByTestId("tbody")
+      console.log(billsList.innerHTML)
+      
+      const iconEye = document.querySelectorAll(`div[data-testid="icon-eye"]`)
+      if (iconEye == null)
+      expect(billsList.innerHTML == "").toBeTruthy()
+    })
+  })
   /******************************************************************** */
 
 
