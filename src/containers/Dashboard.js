@@ -96,6 +96,7 @@ export default class {
         $(`#open-bill${b.id}`).css({ background: '#0D5AE5' })
       })
 
+
       $(`#open-bill${bill.id}`).css({ background: '#2A2B35' })
       $('.dashboard-right-container div').html(DashboardFormUI(bill))
       $('.vertical-navbar').css({ height: '150vh' })
@@ -103,9 +104,7 @@ export default class {
     } else {
       $(`#open-bill${bill.id}`).css({ background: '#0D5AE5' })
 
-      $('.dashboard-right-container div').html(`
-        <div id="big-billed-icon" data-testid="big-billed-icon"> ${BigBilledIcon} </div>
-      `)
+      $('.dashboard-right-container div').html(`<div id="big-billed-icon" data-testid="big-billed-icon"> ${BigBilledIcon} </div>`)
       $('.vertical-navbar').css({ height: '120vh' })
       this.counter ++
     }
@@ -146,14 +145,38 @@ export default class {
 
     } else {
       $(`#arrow-icon${this.index}`).css({ transform: 'rotate(90deg)'})
-      $(`#status-bills-container${this.index}`)
-        .html("")
+      $(`#status-bills-container${this.index}`).html("")
+      /******************************************************* */
+      // $(`#open-bill${bill.id}`).css({ background: '#0D5AE5' })
+      $('.dashboard-right-container div').html(`<div id="big-billed-icon" data-testid="big-billed-icon"> ${BigBilledIcon} </div>`)
+      $('.vertical-navbar').css({ height: '120vh' })
+      /******************************************************* */
       this.counter ++
     }
 
     bills.forEach(bill => {
-      $(`#open-bill${bill.id}`).click((e) => this.handleEditTicket(e, bill, bills))
+      $(`#open-bill${bill.id}`).click((e) => {
+        this.handleEditTicket(e, bill, bills)
+        /******************************************************* */
+        if(this.counter === 2){
+          $(`#open-bill${bill.id}`).css({ background: '#0D5AE5' })
+          $('.dashboard-right-container div').html(`<div id="big-billed-icon" data-testid="big-billed-icon"> ${BigBilledIcon} </div>`)
+          $('.vertical-navbar').css({ height: '120vh' })
+          this.counter ++
+        }
+        /******************************************************* */
+      })
+      
     })
+
+    // bills.forEach(bill => {
+    //   $(`#open-bill${bill.id}`).click((e) => this.handleEditTicket(e, bill, bills))
+    //   $(`#open-bill${bill.id}`).click((e) => {
+    //   $('.dashboard-right-container div').html(`<div id="big-billed-icon" data-testid="big-billed-icon"> ${BigBilledIcon} </div>`)
+    //   $('.vertical-navbar').css({ height: '120vh' })
+
+    //   })
+    // })
 
     return bills
 
