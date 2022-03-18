@@ -169,15 +169,6 @@ export default class {
       
     })
 
-    // bills.forEach(bill => {
-    //   $(`#open-bill${bill.id}`).click((e) => this.handleEditTicket(e, bill, bills))
-    //   $(`#open-bill${bill.id}`).click((e) => {
-    //   $('.dashboard-right-container div').html(`<div id="big-billed-icon" data-testid="big-billed-icon"> ${BigBilledIcon} </div>`)
-    //   $('.vertical-navbar').css({ height: '120vh' })
-
-    //   })
-    // })
-
     return bills
 
   }

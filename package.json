@@ -1,7 +1,7 @@
 {
   "scripts": {
     "test": "jest --coverage --noStackTrace --silent",
-    "test:log": "jest --coverage --noStackTrace --silent"
+    "test:log": "jest --coverage --noStackTrace "
   },
   "jest": {
     "verbose": false,

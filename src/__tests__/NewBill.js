@@ -5,7 +5,6 @@
 import { screen, waitFor } from "@testing-library/dom"
 import NewBillUI from "../views/NewBillUI.js"
 import NewBill from "../containers/NewBill.js"
-
 import { ROUTES } from "../constants/routes.js"
 import { localStorageMock } from "../__mocks__/localStorage.js"
 
