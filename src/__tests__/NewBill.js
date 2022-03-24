@@ -32,15 +32,16 @@ describe("Given I am connected as an employee", () => {
       const mailIcon = screen.getByTestId('icon-mail')
       //to-do write expect expression
       expect(mailIcon.classList.contains('active-icon')).toBeTruthy()
-      console.log('active icon')
+      
     })    
-    test("Then ... ", () => {
-      const html = NewBillUI()
-      document.body.innerHTML = html
-      // to-do write assertion
-      console.log(NewBillUI())
+    // test("Then ... ", () => {
+    //   const html = NewBillUI()
+    //   document.body.innerHTML = html
+    //   // to-do write assertion
+    //   expect()
+    //   console.log(NewBillUI())
 
-      })
+    //   })
   })
 })
   describe("test toto()", () => {

@@ -3,14 +3,14 @@
  */
 
 import { screen, waitFor } from "@testing-library/dom"
+import userEvent from '@testing-library/user-event'
 import BillsUI from "../views/BillsUI.js"
+import ErrorPage from "./ErrorPage.js"
+import LoadingPage from "./LoadingPage.js"
 import { bills } from "../fixtures/bills.js"
 import { ROUTES_PATH, ROUTES } from "../constants/routes.js";
-
-
 import { localStorageMock } from "../__mocks__/localStorage.js";
 import Bills, { handleClickIconEye } from "../containers/Bills.js";
-
 import router from "../app/Router.js";
 
 describe("Given I am connected as an employee", () => {
@@ -23,16 +23,18 @@ describe("Given I am connected as an employee", () => {
       window.localStorage.setItem('user', JSON.stringify({
         type: 'Employee'
       }))
+
       const root = document.createElement("div")
       root.setAttribute("id", "root")
       document.body.append(root)
       router()
+
       window.onNavigate(ROUTES_PATH.Bills)
       await waitFor(() => screen.getByTestId('icon-window'))
       const windowIcon = screen.getByTestId('icon-window')
+      
       //to-do write expect expression
       expect(windowIcon.classList.contains('active-icon')).toBeTruthy()
-      console.log('active icon')
     })
     test("Then bills should be ordered from earliest to latest", () => {
       document.body.innerHTML = BillsUI({
@@ -78,23 +80,27 @@ describe("Given I am connected as an employee", () => {
     describe('When I click on the icon eye', () => {
 
       test('A modal should open', () => {
-        Object.defineProperty(window, 'localStorage', {
-          value: localStorageMock
-        })
-        window.localStorage.setItem('user', JSON.stringify({
-          type: 'Employee'
-        }))
-        document.body.innerHTML = BillsUI({
-          data: bills
-        })
+       // PAGE
+      //on fabrique la page (<div>...</div>)
+      document.body.innerHTML = BillsUI( {data: bills})
 
-        const eyes = screen.getAllByTestId('icon-eye')
-        eyes.forEach(eye => {
-          eye.addEventListener('click', handleClickIconEye)
-        })
+        // On modifie le localStorage en le remplacant par le notre
+        Object.defineProperty(window, 'localStorage', { value: localStorageMock })
+        //permet de set si on est employé ou admin
+        window.localStorage.setItem('user', JSON.stringify({ type: 'employee' }))
 
+        const billsui = new BillsUI({ data: bills })
+        const handleClickIconEye = jest.fn((e) => billsui.handleClickIconEye(e, bills))
+        
+        const eye = screen.getByTestId('icon-eye')
+        
+        eye.addEventListener('click', handleClickIconEye)
+        
+        userEvent.click(eye)
         const modale = screen.getByTestId('modaleFileEmployee')
-        expect(modale).toBeTruthy()
+        expect (modale).toBeTruthy() && (handleClickIconEye()).toHaveBeenCalledTimes(1)
+        
+
       })
     })
   })
