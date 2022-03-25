@@ -5,12 +5,10 @@
 import { screen, waitFor } from "@testing-library/dom"
 import userEvent from '@testing-library/user-event'
 import BillsUI from "../views/BillsUI.js"
-import ErrorPage from "./ErrorPage.js"
-import LoadingPage from "./LoadingPage.js"
 import { bills } from "../fixtures/bills.js"
 import { ROUTES_PATH, ROUTES } from "../constants/routes.js";
 import { localStorageMock } from "../__mocks__/localStorage.js";
-import Bills, { handleClickIconEye } from "../containers/Bills.js";
+import Bills from "../containers/Bills.js";
 import router from "../app/Router.js";
 
 describe("Given I am connected as an employee", () => {
@@ -32,8 +30,7 @@ describe("Given I am connected as an employee", () => {
       window.onNavigate(ROUTES_PATH.Bills)
       await waitFor(() => screen.getByTestId('icon-window'))
       const windowIcon = screen.getByTestId('icon-window')
-      
-      //to-do write expect expression
+    // ********************************************************************
       expect(windowIcon.classList.contains('active-icon')).toBeTruthy()
     })
     test("Then bills should be ordered from earliest to latest", () => {
@@ -74,6 +71,8 @@ describe("Given I am connected as an employee", () => {
       expect(spy).toHaveBeenCalledTimes(1)
     });
 
+    
+    //async?
     test("Emit event on click icon eyes", async () => {
       // création d'un DOM virtuel + son controller
       const onNavigate = (pathname) => { document.body.innerHTML = ROUTES({ pathname }) }
@@ -82,66 +81,46 @@ describe("Given I am connected as an employee", () => {
       const BillsController = new Bills({ document, onNavigate, store: null, localStorage: window.localStorage })
       document.body.innerHTML = BillsUI({ data: bills })
       
-      // récupère le premier icon de la page
-      const iconEyes = screen.getAllByTestId("icon-eye")
-      const icon = iconEyes[0]
-
       // on mock la fonction handleClickIconEye
-      const handleClickIconEye = jest.fn((e) => BillsController.handleClickIconEye(icon))
-      icon.addEventListener('click', handleClickIconEye(icon))
-      userEvent.click(icon)
-      expect(handleClickIconEye).toHaveBeenCalled()
-      // const modale = screen.getByTestId('modaleFileEmployee')
-      
+      const handleClickIconEye = jest.fn(BillsController.handleClickIconEye)
 
+      const iconEyes = screen.getAllByTestId("icon-eye")
+      iconEyes.forEach(icon => {
+        icon.addEventListener('click', handleClickIconEye(icon))
+
+      /*useless, still can't get the modal with display block*/
+
+      userEvent.click(icon)
+
+      expect(handleClickIconEye).toHaveBeenCalled()
+      
+      const modale = screen.getByTestId('modaleFileEmployee')
+      // const modale = document.querySelector('#modaleFile')
+      expect(modale.classList.contains('fade')).toBeTruthy()
+      console.log(modale.classList[2])
+      // expect(modale.classList.contains('show')).toBeTruthy()
+
+      /*useless, still can't get the modal with display block*/
+      });
 
     });
 
-
-    // describe('When I click on the icon eye', () => {
-
-    //   test('A modal should open', () => {
-    //    // PAGE
-    //   //on fabrique la page (<div>...</div>)
-    //   document.body.innerHTML = BillsUI( {data: bills})
-
-    //     // On modifie le localStorage en le remplacant par le notre
-    //     Object.defineProperty(window, 'localStorage', { value: localStorageMock })
-    //     //permet de set si on est employé ou admin
-    //     window.localStorage.setItem('user', JSON.stringify({ type: 'employee' }))
-
-    //     const billsui = new BillsUI({ data: bills })
-    //     const handleClickIconEye = jest.fn((e) => billsui.handleClickIconEye(e, bills))
-        
-    //     const eye = screen.getByTestId('icon-eye')
-        
-    //     eye.addEventListener('click', handleClickIconEye)
-        
-    //     userEvent.click(eye)
-    //     const modale = screen.getByTestId('modaleFileEmployee')
-    //     expect (modale).toBeTruthy() && (handleClickIconEye()).toHaveBeenCalledTimes(1)
-        
-    //   })
-    // })
   })
   /******************************************************************** */
-  describe('When I am on Bills page and there are no bills', () => {
-    test('Then, no bills should be shown', () => {
-      document.body.innerHTML = BillsUI({
-        data: bills
-      })
+  // describe('When I am on Bills page and there are no bills', () => {
+  //   test('Then, no bills should be shown', () => {
+  //     document.body.innerHTML = BillsUI({
+  //       data: bills
+  //     })
       
-      const billsList = screen.queryByTestId("tbody")
-      // console.log(billsList.innerHTML)
+  //     const billsList = screen.queryByTestId("tbody")
+  //     // console.log(billsList.innerHTML)
       
-      const iconEye = document.querySelectorAll(`div[data-testid="icon-eye"]`)
-      if (iconEye == null)
-      expect(billsList.innerHTML == "").toBeTruthy()
-    })
-  })
+  //     const iconEye = document.querySelectorAll(`div[data-testid="icon-eye"]`)
+  //     if (iconEye == null)
+  //     expect(billsList.innerHTML == "").not.toBeTruthy()
+  //   })
+  // })
   /******************************************************************** */
-
-
-
 
 })
