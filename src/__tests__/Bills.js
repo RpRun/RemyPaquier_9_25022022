@@ -2,14 +2,22 @@
  * @jest-environment jsdom
  */
 
-import { screen, waitFor } from "@testing-library/dom"
+import { fireEvent, screen, waitFor,  } from "@testing-library/dom"
+import { getByTestId } from '@testing-library/dom'
+
 import userEvent from '@testing-library/user-event'
+
 import BillsUI from "../views/BillsUI.js"
 import { bills } from "../fixtures/bills.js"
 import { ROUTES_PATH, ROUTES } from "../constants/routes.js";
 import { localStorageMock } from "../__mocks__/localStorage.js";
 import Bills from "../containers/Bills.js";
 import router from "../app/Router.js";
+
+import mockStore from "../__mocks__/store"
+// demander a colin err default
+jest.mock("../app/store", () => mockStore)                        
+
 
 describe("Given I am connected as an employee", () => {
   describe("When I am on Bills Page", () => {
@@ -74,36 +82,48 @@ describe("Given I am connected as an employee", () => {
     
     //async?
     test("Emit event on click icon eyes", async () => {
+
       // création d'un DOM virtuel + son controller
+      
       const onNavigate = (pathname) => { document.body.innerHTML = ROUTES({ pathname }) }
       Object.defineProperty(window, 'localStorage', { value: localStorageMock })
       window.localStorage.setItem('user', JSON.stringify({ type: 'employee' }))
+      
       const BillsController = new Bills({ document, onNavigate, store: null, localStorage: window.localStorage })
+    
       document.body.innerHTML = BillsUI({ data: bills })
       
       // on mock la fonction handleClickIconEye
       const handleClickIconEye = jest.fn(BillsController.handleClickIconEye)
-
+      
       const iconEyes = screen.getAllByTestId("icon-eye")
       iconEyes.forEach(icon => {
-        icon.addEventListener('click', handleClickIconEye(icon))
-
-      /*useless, still can't get the modal with display block*/
-
-      userEvent.click(icon)
-
-      expect(handleClickIconEye).toHaveBeenCalled()
+        icon.addEventListener('click', handleClickIconEye(icon))      
+        userEvent.click(icon)
+ 
+      // setTimeout(function () {
+        expect(handleClickIconEye).toHaveBeenCalled()
+        // await waitFor(() => screen.getByTestId("modaleFileEmployee"));
+        // // const modale = document.querySelector('#modaleFile')
+        const modale = screen.getByTestId('modaleFileEmployee')
+        // expect(modale.classList.contains('show')).toBeTruthy()
+        
+        
+        // await waitFor(() => screen.findByText('Justificatif') )
+        console.log(modale.classList)
+        // expect(modale.classList.contains('show')).toBeTruthy()
+        
+    // }, 1000);
+     
+    
+      // // const modale = document.querySelector('#modaleFile')
+      // // expect(getByTestId('modaleFileEmployee').toHaveClass('fade')) 
       
-      const modale = screen.getByTestId('modaleFileEmployee')
-      // const modale = document.querySelector('#modaleFile')
-      expect(modale.classList.contains('fade')).toBeTruthy()
-      console.log(modale.classList[2])
-      // expect(modale.classList.contains('show')).toBeTruthy()
 
-      /*useless, still can't get the modal with display block*/
       });
-
     });
+     
+
 
   })
   /******************************************************************** */
@@ -118,9 +138,76 @@ describe("Given I am connected as an employee", () => {
       
   //     const iconEye = document.querySelectorAll(`div[data-testid="icon-eye"]`)
   //     if (iconEye == null)
-  //     expect(billsList.innerHTML == "").not.toBeTruthy()
+  //     expect(billsList.innerHTML == "").toBeTruthy()
   //   })
   // })
   /******************************************************************** */
 
+})
+
+// test d'intégration GET
+describe("Given I am a user connected as Employee", () => {
+  describe("When I navigate to Dashboard", () => {
+    test("fetches bills from mock API GET", async () => {
+      localStorage.setItem("user", JSON.stringify({ type: "Admin", email: "a@a" }));
+      const root = document.createElement("div")
+      root.setAttribute("id", "root")
+      document.body.append(root)
+      router()
+      window.onNavigate(ROUTES_PATH.Dashboard)
+      await waitFor(() => screen.getByText("Validations"))
+      const contentPending  = await screen.getByText("En attente (1)")
+      expect(contentPending).toBeTruthy()
+      const contentRefused  = await screen.getByText("Refusé (2)")
+      expect(contentRefused).toBeTruthy()
+      expect(screen.getByTestId("big-billed-icon")).toBeTruthy()
+    })
+  describe("When an error occurs on API", () => {
+    beforeEach(() => {
+      jest.spyOn(mockStore, "bills")
+      Object.defineProperty(
+          window,
+          'localStorage',
+          { value: localStorageMock }
+      )
+      window.localStorage.setItem('user', JSON.stringify({
+        type: 'Admin',
+        email: "a@a"
+      }))
+      const root = document.createElement("div")
+      root.setAttribute("id", "root")
+      document.body.appendChild(root)
+      router()
+    })
+    test("fetches bills from an API and fails with 404 message error", async () => {
+
+      mockStore.bills.mockImplementationOnce(() => {
+        return {
+          list : () =>  {
+            return Promise.reject(new Error("Erreur 404"))
+          }
+        }})
+      window.onNavigate(ROUTES_PATH.Dashboard)
+      await new Promise(process.nextTick);
+      const message = await screen.getByText(/Erreur 404/)
+      expect(message).toBeTruthy()
+    })
+
+    test("fetches messages from an API and fails with 500 message error", async () => {
+
+      mockStore.bills.mockImplementationOnce(() => {
+        return {
+          list : () =>  {
+            return Promise.reject(new Error("Erreur 500"))
+          }
+        }})
+
+      window.onNavigate(ROUTES_PATH.Dashboard)
+      await new Promise(process.nextTick);
+      const message = await screen.getByText(/Erreur 500/)
+      expect(message).toBeTruthy()
+    })
+  })
+
+  })
 })
