@@ -4,6 +4,8 @@
 
 import { fireEvent, screen, waitFor,  } from "@testing-library/dom"
 import { getByTestId } from '@testing-library/dom'
+// pourquoi getByTestId jamais lu?
+// https://openclassrooms.com/fr/courses/7159306-testez-vos-applications-front-end-avec-javascript/7332810-realisez-vos-premiers-tests-d-integration-avec-jest-test-dom-testing-library
 import userEvent from '@testing-library/user-event'
 import BillsUI from "../views/BillsUI.js"
 import Bills from "../containers/Bills.js";
@@ -70,6 +72,7 @@ describe("Given I am connected as an employee", () => {
       const spy = jest.spyOn(BillsController, 'onNavigate');
 
       const buttonNewBill = document.querySelector(`button[data-testid="btn-new-bill"]`)
+      
       buttonNewBill.click()
 
       expect(spy).toHaveBeenCalledTimes(1)

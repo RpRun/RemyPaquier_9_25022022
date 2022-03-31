@@ -30,7 +30,7 @@ import {
 describe("Given I am connected as an employee", () => {
   describe("When I am on NewBill Page", () => {
     test("Then ... message icon in vertical layout should be highlighted", async () => {
-
+   
       Object.defineProperty(window, 'localStorage', {
         value: localStorageMock
       })
@@ -125,41 +125,34 @@ describe("test toto()", () => {
 
     })
 
-  // describe('When I provide a picture as proof of invoice', () => {
-  //   test("then it should have been loaded in the input", () => {
+  describe('When I provide a picture as proof of invoice', () => {
+    test("then it should have been loaded in the input", () => {
       
-  //     const html = NewBillUI()
-  //     document.body.innerHTML = html
+      const html = NewBillUI()
+      document.body.innerHTML = html
      
-  //     const onNavigate = (pathname) => { document.body.innerHTML = ROUTES({ pathname })}     
-  //     Object.defineProperty(window, 'localStorage', { value: localStorageMock })   
-  //     window.localStorage.setItem('user', JSON.stringify({ type: 'Employee' }))
-  //     const NewBillController = new NewBill({ document, onNavigate, store: null, localStorage: window.localStorage
-  //     })
-  //     // const filePath = e.target.value.split(/\\/g)
-  //     // const allowedExtensions = /(\.jpg|\.jpeg|\.png)$/i;
-  //     // fileInput.value = '';
-  //     // const fakeProofPicture = {
-  //     //   fileName: "resto",
-
-  //     // }
-
-  //     // const fileInput = screen.getByTestId('file')
-  //     // const fileInput = document.querySelector(`input[data-testid="file"]`).files[0]
- 
-  //     const handleChangeFile  = jest.fn(NewBillController.handleChangeFile)
+      const onNavigate = (pathname) => { document.body.innerHTML = ROUTES({ pathname })}     
+      Object.defineProperty(window, 'localStorage', { value: localStorageMock })   
+      window.localStorage.setItem('user', JSON.stringify({ type: 'Employee' }))
+      const NewBillController = new NewBill({ document, onNavigate, store: null, localStorage: window.localStorage
+      })
+         
+      const handleChangeFile  = jest.fn(NewBillController.handleChangeFile)
+      const fileInput = screen.getByTestId('file')
+      // const fileInput = document.querySelector(`input[data-testid="file"]`).files[0]
       
-  //     const fileInput = document.querySelector(`input[data-testid="file"]`).files[0]
-      
-  //     fileInput.value = {}
-  //     fileInput.addEventListener("change", handleChangeFile)
-  //     userEvent.change(fileInput)
-      
-  //     expect(handleChangeFile).toHaveBeenCalled()     
+      const file = new File(['dummy content'], 'example.png', {type: 'image/png'})
+      // const imageInput = getByLabelText('Select an image')
+      // fileInput.addEventListener("change", handleChangeFile)
+      fireEvent.change(fileInput, {target: {files: [file]}})
 
-  //   })
+      // userEvent.change(fileInput)
+      
+      expect(handleChangeFile).toHaveBeenCalled()     
+      expect(fileInput.files[0].name).toBe('example.png')
+    })
 
-  // })
+  })
 
 })
 
