@@ -10,6 +10,7 @@ import { localStorageMock } from "../__mocks__/localStorage.js"
 import router from "../app/Router.js";
 import { ROUTES_PATH } from "../constants/routes.js";
 
+window.alert = jest.fn();
 
 describe("Given I am connected as an employee", () => {
   describe("When I am on NewBill Page", () => {
@@ -56,7 +57,7 @@ describe('When I provide a picture as proof of invoice', () => {
     // input file
     const file = new File(['dummy content'], 'example.png', {type: 'image/png'})
     const handleChangeFile  = jest.fn(NewBillController.handleChangeFile)
-
+    
     const inputFile = screen.getByTestId('file')
     Object.defineProperty(inputFile, 'files', { value: [file] })
 
