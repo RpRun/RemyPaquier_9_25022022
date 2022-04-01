@@ -10,7 +10,7 @@ import { localStorageMock } from "../__mocks__/localStorage.js"
 import router from "../app/Router.js";
 import { ROUTES_PATH } from "../constants/routes.js";
 
-window.alert = jest.fn();
+// window.alert = jest.fn();
 
 describe("Given I am connected as an employee", () => {
   describe("When I am on NewBill Page", () => {
@@ -32,60 +32,97 @@ describe("Given I am connected as an employee", () => {
     })
   
   })
-})
 
- 
+  describe('When I provide a picture as proof of invoice', () => {
+    test("then it should have been loaded in the input without any error message", () => {
+      
+      const html = NewBillUI()
+      document.body.innerHTML = html
+      
+      // const onNavigate = (pathname) => { document.body.innerHTML = ROUTES( { pathname } )}     
+      // Object.defineProperty(window, 'localStorage', { value: localStorageMock })   
+      // window.localStorage.setItem('user', JSON.stringify({ type: 'Employee' }))
+      const NewBillController = new NewBill( { document, onNavigate, store: null, localStorage: window.localStorage } )
+      // ======================================
+      // error message
+      const errorMessage = jest.fn(window.alert('Invalid file type'));  
+      // ======================================
+      // input file
+      const file = new File(['dummy content'], 'example.jpg', {type: 'image/jpg'})
+      const handleChangeFile  = jest.fn(NewBillController.handleChangeFile)
+         
+      const inputFile = screen.getByTestId('file')
+      Object.defineProperty(inputFile, 'files', { value: [file] })
 
-describe('When I provide a picture as proof of invoice', () => {
-  test("then it should have been loaded in the input", () => {
-    
-    const html = NewBillUI()
-    document.body.innerHTML = html
-    
-    const onNavigate = (pathname) => { document.body.innerHTML = ROUTES( { pathname } )}     
-    Object.defineProperty(window, 'localStorage', { value: localStorageMock })   
-    window.localStorage.setItem('user', JSON.stringify({ type: 'Employee' }))
-    const NewBillController = new NewBill( { document, onNavigate, store: null, localStorage: window.localStorage } )
-        
-    // ======================================
-    // input commentaire
-    const inputCommentary = screen.getByTestId('commentary')
-    fireEvent.change(inputCommentary, { target: { value: 'Hello' } })
-    expect(inputCommentary.value).toBe('Hello')
+      inputFile.addEventListener("change", handleChangeFile)
+      fireEvent.change(inputFile)
+      
+      expect(handleChangeFile).toHaveBeenCalled()     
+      expect(inputFile.files[0].name).toBe('example.jpg')      
+      expect(errorMessage).not.toHaveBeenCalled();
+      
+    })
+  
+  })
+  
+  describe('When I provide a non-picture as proof of invoice', () => {
+    test("then an error-message should appear ", () => {
+      
+      const html = NewBillUI()
+      document.body.innerHTML = html
+      
+      // const onNavigate = (pathname) => { document.body.innerHTML = ROUTES( { pathname } )}     
+      // Object.defineProperty(window, 'localStorage', { value: localStorageMock })   
+      // window.localStorage.setItem('user', JSON.stringify({ type: 'Employee' }))
 
-    // ======================================
-    // input file
-    const file = new File(['dummy content'], 'example.png', {type: 'image/png'})
-    const handleChangeFile  = jest.fn(NewBillController.handleChangeFile)
-    
-    const inputFile = screen.getByTestId('file')
-    Object.defineProperty(inputFile, 'files', { value: [file] })
-
-    // const fileInput = document.querySelector(`input[data-testid="file"]`).files[0]
-    
-    // const imageInput = getByLabelText('Select an image')
-    inputFile.addEventListener("change", handleChangeFile)
-    fireEvent.change(inputFile)
-    
-    expect(handleChangeFile).toHaveBeenCalled()     
-    expect(inputFile.files[0].name).toBe('example.png')
+      const NewBillController = new NewBill( { document, onNavigate, store: null, localStorage: window.localStorage } )
+          
+      // input file
+      const file = new File(['dummy content'], 'example.pdf', {type: 'text/pdf'})
+      const handleChangeFile  = jest.fn(NewBillController.handleChangeFile)
+      window.alert = jest.fn();
+  
+      const inputFile = screen.getByTestId('file')
+      Object.defineProperty(inputFile, 'files', { value: [file] })
+  
+      inputFile.addEventListener("change", handleChangeFile)
+      fireEvent.change(inputFile)
+      
+      expect(handleChangeFile).toHaveBeenCalled()     
+      expect(inputFile.files[0].name).toBe('example.pdf')
+  
+      expect(window.alert).toHaveBeenCalled();
+      expect(window.alert).toBeCalledWith('Invalid file type');
+    })
+  
   })
 
-})
-
-describe("Given I am connected as an employee", () => {
+  describe('When I provide commentary', () => {
+    test("then it should have been loaded in the input ", () => {
+      
+      const html = NewBillUI()
+      document.body.innerHTML = html
+         
+      Object.defineProperty(window, 'localStorage', { value: localStorageMock })   
+      window.localStorage.setItem('user', JSON.stringify({ type: 'Employee' }))
+      
+      const inputCommentary = screen.getByTestId('commentary')
+      fireEvent.change(inputCommentary, { target: { value: 'Hello' } })
+      expect(inputCommentary.value).toBe('Hello')
+     
+    })
+  
+  })
+  
   describe('When I am submitting a bill', () => {
     test("My form should be submitted...", () => {
       // On fabrique la page
       const html = NewBillUI()
       document.body.innerHTML = html
-      //On creer une fonction OnNavigate qui permet de naviguer sur les liens de la page
-      //mais qui est demandee à la création de l'objet NewBill
-      const onNavigate = (pathname) => { document.body.innerHTML = ROUTES({ pathname })}
-      // On modifie le localStorage en le remplacant par le notre
-      Object.defineProperty(window, 'localStorage', { value: localStorageMock })
-      //permet de set si on est employé ou admin
-      window.localStorage.setItem('user', JSON.stringify({ type: 'Employee' }))
+    
+      // const onNavigate = (pathname) => { document.body.innerHTML = ROUTES({ pathname })} 
+      // Object.defineProperty(window, 'localStorage', { value: localStorageMock })  
+      // window.localStorage.setItem('user', JSON.stringify({ type: 'Employee' }))
 
       const NewBillController = new NewBill({ document, onNavigate, store: null, localStorage: window.localStorage })
 
@@ -96,8 +133,16 @@ describe("Given I am connected as an employee", () => {
       newBillForm.submit()
 
       expect(updateBill).toHaveBeenCalled()  
-        
+      
     })
   })
+
 })
+
+ 
+
+
+
+  
+
 
