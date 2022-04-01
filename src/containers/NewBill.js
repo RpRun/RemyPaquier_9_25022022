@@ -25,10 +25,6 @@ export default class NewBill {
     })
   }
 
-  // fonction de test
-  toto = (number) => {
-    return number + 1
-  }
 
   handleChangeFile = e => {
     e.preventDefault()
@@ -37,6 +33,7 @@ export default class NewBill {
     // Allowing file type
     if (!allowedExtensions.exec(filePath)) {
       alert('Invalid file type');
+      const fileInput = this.document.querySelector(`input[data-testid="file"]`)
       fileInput.value = '';
       return false;
     } else {
@@ -51,9 +48,7 @@ export default class NewBill {
         .bills()
         .create({
           data: formData,
-          headers: {
-            noContentType: true
-          }
+          headers: { noContentType: true }
         })
         .then(({
           fileUrl,

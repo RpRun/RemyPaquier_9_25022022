@@ -3,9 +3,6 @@
  */
 
 import { fireEvent, screen, waitFor,  } from "@testing-library/dom"
-import { getByTestId } from '@testing-library/dom'
-// pourquoi getByTestId jamais lu?
-// https://openclassrooms.com/fr/courses/7159306-testez-vos-applications-front-end-avec-javascript/7332810-realisez-vos-premiers-tests-d-integration-avec-jest-test-dom-testing-library
 import userEvent from '@testing-library/user-event'
 import BillsUI from "../views/BillsUI.js"
 import Bills from "../containers/Bills.js";
@@ -55,8 +52,6 @@ describe("Given I am connected as an employee", () => {
       document.body.innerHTML = BillsUI({
         data: bills
       })
-
-      // CONTROLLER
       //On créer une fonction OnNavigate qui permet de naviguer sur les liens de la page
       //mais qui est demandée à la création de l'objet NewBill
       const onNavigate = (pathname) => {
@@ -117,11 +112,7 @@ describe("Given I am connected as an employee", () => {
         document.body.innerHTML = BillsUI({ data: bills })
        
         const billsList = screen.queryByTestId("tbody")
-        console.log(billsList.length)
-        
-        // billsList.innerHTML = html
-        // const iconEye = document.querySelectorAll(`div[data-testid="icon-eye"]`)
-        
+             
         expect(billsList.length = 4).toBeTruthy()
       })
     })
