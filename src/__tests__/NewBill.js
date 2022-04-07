@@ -10,7 +10,7 @@ import { localStorageMock } from "../__mocks__/localStorage.js"
 import router from "../app/Router.js";
 import { ROUTES_PATH } from "../constants/routes.js";
 
-// window.alert = jest.fn();
+window.alert = jest.fn();
 
 describe("Given I am connected as an employee", () => {
   describe("When I am on NewBill Page", () => {
@@ -26,11 +26,35 @@ describe("Given I am connected as an employee", () => {
 
       await waitFor(() => screen.getByTestId('icon-mail'))     
       const mailIcon = screen.getByTestId('icon-mail')
+
+      // await waitFor(() => screen.getByTestId('btn-new-bill'))
+      // const newBillButton = await screen.getByTestId('btn-new-bill')
+      
+      // await waitFor(() => screen.getByText('Mes notes de frais'))
+      // const newBillText = await screen.getAllByText('Mes notes de frais')
       
       expect(mailIcon.classList.contains('active-icon')).toBeTruthy()
+      // expect (newBillButton).toBeTruthy()
+      // expect (newBillText).toBeTruthy()
+
 
     })
   
+  })
+
+  describe("When I am on NewBill Page", () => {
+    test("Then the message'Envoyer une note de frais' should be displayed", async () => {
+  
+      const html = NewBillUI()
+      document.body.innerHTML = html
+         
+      Object.defineProperty(window, 'localStorage', { value: localStorageMock })  
+      window.localStorage.setItem('user', JSON.stringify({ type: 'Employee' }))
+
+      expect(screen.getAllByText('Envoyer une note de frais')).toBeTruthy()
+     
+    })
+    
   })
 
   describe('When I provide a picture as proof of invoice', () => {
@@ -38,10 +62,11 @@ describe("Given I am connected as an employee", () => {
       
       const html = NewBillUI()
       document.body.innerHTML = html
-      
-      // const onNavigate = (pathname) => { document.body.innerHTML = ROUTES( { pathname } )}     
-      // Object.defineProperty(window, 'localStorage', { value: localStorageMock })   
-      // window.localStorage.setItem('user', JSON.stringify({ type: 'Employee' }))
+      //*********************************************** */
+      const onNavigate = (pathname) => { document.body.innerHTML = ROUTES( { pathname } )}     
+      //*********************************************** */
+      Object.defineProperty(window, 'localStorage', { value: localStorageMock })   
+      window.localStorage.setItem('user', JSON.stringify({ type: 'Employee' }))
       const NewBillController = new NewBill( { document, onNavigate, store: null, localStorage: window.localStorage } )
       // ======================================
       // error message
@@ -56,10 +81,51 @@ describe("Given I am connected as an employee", () => {
 
       inputFile.addEventListener("change", handleChangeFile)
       fireEvent.change(inputFile)
+      //********************************************************* */
+
       
+
+
+      //********************************************************* */
       expect(handleChangeFile).toHaveBeenCalled()     
       expect(inputFile.files[0].name).toBe('example.jpg')      
       expect(errorMessage).not.toHaveBeenCalled();
+      expect(errorMessage).not.toHaveBeenCalledWith('Invalid file type');
+      
+    })
+    test("then new data should be created", () => {
+      
+      const html = NewBillUI()
+      document.body.innerHTML = html
+      //*********************************************** */
+      const onNavigate = (pathname) => { document.body.innerHTML = ROUTES( { pathname } )}     
+      //*********************************************** */
+      Object.defineProperty(window, 'localStorage', { value: localStorageMock })   
+      window.localStorage.setItem('user', JSON.stringify({ type: 'Employee' }))
+      const NewBillController = new NewBill( { document, onNavigate, store: null, localStorage: window.localStorage } )
+      // ======================================
+      // error message
+      const errorMessage = jest.fn(window.alert('Invalid file type'));  
+      // ======================================
+      // input file
+      const file = new File(['dummy content'], 'example.jpg', {type: 'image/jpg'})
+      const handleChangeFile  = jest.fn(NewBillController.handleChangeFile)
+         
+      const inputFile = screen.getByTestId('file')
+      Object.defineProperty(inputFile, 'files', { value: [file] })
+
+      inputFile.addEventListener("change", handleChangeFile)
+      fireEvent.change(inputFile)
+      //********************************************************* */
+
+      
+
+
+      //********************************************************* */
+      expect(handleChangeFile).toHaveBeenCalled()     
+      expect(inputFile.files[0].name).toBe('example.jpg')      
+      expect(errorMessage).not.toHaveBeenCalled();
+      expect(errorMessage).not.toHaveBeenCalledWith('Invalid file type');
       
     })
   
@@ -72,25 +138,24 @@ describe("Given I am connected as an employee", () => {
       document.body.innerHTML = html
       
       // const onNavigate = (pathname) => { document.body.innerHTML = ROUTES( { pathname } )}     
-      // Object.defineProperty(window, 'localStorage', { value: localStorageMock })   
-      // window.localStorage.setItem('user', JSON.stringify({ type: 'Employee' }))
+      Object.defineProperty(window, 'localStorage', { value: localStorageMock })   
+      window.localStorage.setItem('user', JSON.stringify({ type: 'Employee' }))
 
       const NewBillController = new NewBill( { document, onNavigate, store: null, localStorage: window.localStorage } )
           
       // input file
       const file = new File(['dummy content'], 'example.pdf', {type: 'text/pdf'})
       const handleChangeFile  = jest.fn(NewBillController.handleChangeFile)
-      window.alert = jest.fn();
+      // window.alert = jest.fn();
   
       const inputFile = screen.getByTestId('file')
       Object.defineProperty(inputFile, 'files', { value: [file] })
   
       inputFile.addEventListener("change", handleChangeFile)
-      fireEvent.change(inputFile)
-      
+      fireEvent.change(inputFile)  
+
       expect(handleChangeFile).toHaveBeenCalled()     
-      expect(inputFile.files[0].name).toBe('example.pdf')
-  
+      expect(inputFile.files[0].name).toBe('example.pdf') 
       expect(window.alert).toHaveBeenCalled();
       expect(window.alert).toBeCalledWith('Invalid file type');
     })
@@ -107,12 +172,13 @@ describe("Given I am connected as an employee", () => {
       window.localStorage.setItem('user', JSON.stringify({ type: 'Employee' }))
       
       const inputCommentary = screen.getByTestId('commentary')
-      fireEvent.change(inputCommentary, { target: { value: 'Hello' } })
+      fireEvent.change(inputCommentary, { target: { value: 'Hello' } })  
+
       expect(inputCommentary.value).toBe('Hello')
      
     })
   
-  })
+  })  
   
   describe('When I am submitting a bill', () => {
     test("My form should be submitted...", () => {
@@ -120,9 +186,9 @@ describe("Given I am connected as an employee", () => {
       const html = NewBillUI()
       document.body.innerHTML = html
     
-      // const onNavigate = (pathname) => { document.body.innerHTML = ROUTES({ pathname })} 
-      // Object.defineProperty(window, 'localStorage', { value: localStorageMock })  
-      // window.localStorage.setItem('user', JSON.stringify({ type: 'Employee' }))
+      const onNavigate = (pathname) => { document.body.innerHTML = ROUTES({ pathname })} 
+      Object.defineProperty(window, 'localStorage', { value: localStorageMock })  
+      window.localStorage.setItem('user', JSON.stringify({ type: 'Employee' }))
 
       const NewBillController = new NewBill({ document, onNavigate, store: null, localStorage: window.localStorage })
 
@@ -132,12 +198,18 @@ describe("Given I am connected as an employee", () => {
       newBillForm.addEventListener("submit", updateBill)
       newBillForm.submit()
 
-      expect(updateBill).toHaveBeenCalled()  
+      const newBillButton = screen.getByTestId('btn-new-bill')
       
+      expect(updateBill).toHaveBeenCalled() 
+      // On verifie qu on est bien revenu sur la page newbill     
+      expect (newBillButton).toBeTruthy()
+      expect(screen.getAllByText('Mes notes de frais')).toBeTruthy()
     })
   })
 
 })
+
+
 
  
 
