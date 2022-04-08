@@ -30,20 +30,17 @@ export default class NewBill {
     e.preventDefault()
     const filePath = e.target.value.split(/\\/g)
     const allowedExtensions = /(\.jpg|\.jpeg|\.png)$/i;
-    // Allowing file type
-    if (!allowedExtensions.exec(filePath)) {
-      alert('Invalid file type');
-      const fileInput = this.document.querySelector(`input[data-testid="file"]`)
-      fileInput.value = '';
-      return false;
-    } else {
-      const file = this.document.querySelector(`input[data-testid="file"]`).files[0]
-      const formData = new FormData()
-      const email = JSON.parse(localStorage.getItem("user")).email
-      formData.append('file', file)
-      formData.append('email', email)
-      const fileName = filePath[filePath.length - 1]
 
+    //========================================================================
+    const file = this.document.querySelector(`input[data-testid="file"]`).files[0]
+    const formData = new FormData()
+    const email = JSON.parse(localStorage.getItem("user")).email
+    formData.append('file', file)
+    formData.append('email', email)
+    const fileName = filePath[filePath.length - 1]
+    //========================================================================
+
+    if (allowedExtensions.exec(filePath)) {
       this.store
         .bills()
         .create({
@@ -59,6 +56,14 @@ export default class NewBill {
           this.fileUrl = fileUrl
           this.fileName = fileName
         }).catch(error => console.error(error))
+    } else {
+      //========================================================================
+      alert('Invalid file type');
+      const fileInput = this.document.querySelector(`input[data-testid="file"]`)
+      fileInput.value = '';
+      return false;
+      //========================================================================
+ 
     }
 
   }
@@ -84,6 +89,7 @@ export default class NewBill {
   }
 
   // not need to cover this function by tests
+  /* istanbul ignore next */
   updateBill = (bill) => {
     if (this.store) {
       this.store
