@@ -40,7 +40,9 @@ describe("Given I am connected as an employee", () => {
     })
     test("Then bills should be ordered from earliest to latest", () => {
       document.body.innerHTML = BillsUI({ data: bills })
-      const dates = screen.getAllByText(/^(19|20)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$/i).map(a => a.innerHTML)
+      const dates = screen
+        .getAllByText(/^(19|20)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$/i)
+        .map(a => a.innerHTML)
       const antiChrono = (a, b) => ((a < b) ? 1 : (a > b) ? -1 : 0)
       const datesSorted = [...dates].sort(antiChrono)
       expect(dates).toEqual(datesSorted)
@@ -107,15 +109,15 @@ describe("Given I am connected as an employee", () => {
       });
     })  
       /******************************************************************** */
-    describe('When I am on Bills page and there are 4 bills', () => {
-      test('Then, 4 bills should be shown', () => {
-        document.body.innerHTML = BillsUI({ data: bills })
+    // describe('When I am on Bills page and there are 4 bills', () => {
+    //   test('Then, 4 bills should be shown', () => {
+    //     document.body.innerHTML = BillsUI({ data: bills })
        
-        const billsList = screen.queryByTestId("tbody")
+    //     const billsList = screen.queryByTestId("tbody")
              
-        expect(billsList.length = 4).toBeTruthy()
-      })
-    })
+    //     expect(billsList.length = 4).toBeTruthy()
+    //   })
+    // })
     /******************************************************************** */  
   })
 
