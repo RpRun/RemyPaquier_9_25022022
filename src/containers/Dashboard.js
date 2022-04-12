@@ -137,7 +137,7 @@ export default class {
     if (this.counter === undefined || this.index !== index) this.counter = 0
     if (this.index === undefined || this.index !== index) this.index = index
     if (this.counter % 2 === 0 ) {
-      // if (this.counter % 2 === 0 || this.counter  === 2)
+
       $(`#arrow-icon${this.index}`).css({ transform: 'rotate(0deg)'})
       $(`#status-bills-container${this.index}`)
         .html(cards(filteredBills(bills, getStatus(this.index))))
@@ -146,9 +146,8 @@ export default class {
     } else {
       $(`#arrow-icon${this.index}`).css({ transform: 'rotate(90deg)'})
       $(`#status-bills-container${this.index}`).html("")
-      /******************************************************* */
-      // $(`#open-bill${bill.id}`).css({ background: '#0D5AE5' })
-      
+     
+      /******************************************************* */   
       $('.dashboard-right-container div').html(`<div id="big-billed-icon" data-testid="big-billed-icon"> ${BigBilledIcon} </div>`)
       $('.vertical-navbar').css({ height: '120vh' })
       /******************************************************* */
@@ -156,9 +155,11 @@ export default class {
     }
 
     bills.forEach(bill => {
-      $(`#open-bill${bill.id}`).click((e) => {
+      $(`#open-bill${bill.id}`)
+      //**************************************** */
+      .off('click')
+      .click((e) => {
         this.handleEditTicket(e, bill, bills)
-
 
         /******************************************************* */
         if(this.counter === 2){
