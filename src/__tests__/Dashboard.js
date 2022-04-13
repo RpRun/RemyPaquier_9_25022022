@@ -236,7 +236,6 @@ describe('Given I am connected as Admin and I am on Dashboard page and I clicked
 
       const modale = screen.getByTestId('modaleFileAdmin')
       expect(modale).toBeTruthy()
-      // expect(modale.classList.contains('show')).toBeTruthy()
       
     })
   })

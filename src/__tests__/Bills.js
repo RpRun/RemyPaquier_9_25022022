@@ -35,7 +35,6 @@ describe("Given I am connected as an employee", () => {
       await waitFor(() => screen.getByTestId('icon-window'))
       const windowIcon = screen.getByTestId('icon-window')
 
-    // ================================================================
       expect(windowIcon.classList.contains('active-icon')).toBeTruthy()
     })
 
@@ -103,9 +102,6 @@ describe("Given I am connected as an employee", () => {
           expect(handleClickIconEye).toHaveBeenCalled()
           const modale = screen.getByTestId('modaleFileEmployee')
           expect(modale).toBeTruthy()               
-          // await waitFor(() => screen.findByText('Justificatif') )
-          // expect(modale.classList.contains('show')).toBeTruthy() 
-          console.log(modale.classList)
           
         });
       });

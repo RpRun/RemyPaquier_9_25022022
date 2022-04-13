@@ -88,8 +88,7 @@
        
        const html = NewBillUI()
        document.body.innerHTML = html
-       
-       // const onNavigate = (pathname) => { document.body.innerHTML = ROUTES( { pathname } )}     
+ 
        Object.defineProperty(window, 'localStorage', { value: localStorageMock })   
        window.localStorage.setItem('user', JSON.stringify({ type: 'Employee' }))
  
@@ -103,7 +102,6 @@
    
        inputFile.addEventListener("change", handleChangeFile)
        fireEvent.change(inputFile)  
-      //  console.log(file.type)
 
        expect(handleChangeFile).toHaveBeenCalled()     
        expect(inputFile.files[0].name).toBe('example.pdf') 
@@ -134,9 +132,7 @@
        // On fabrique la page
        const html = NewBillUI()
        document.body.innerHTML = html    
-       const onNavigate = (pathname) => { document.body.innerHTML = ROUTES({ pathname })} 
-       // localStorageMock necessaire?
-       // Object.defineProperty(window, 'localStorage', { value: localStorageMock })  
+       const onNavigate = (pathname) => { document.body.innerHTML = ROUTES({ pathname })}  
        window.localStorage.setItem('user', JSON.stringify({ type: 'Employee' }))
  
        const NewBillController = new NewBill({ document, onNavigate, store: null, localStorage: window.localStorage })
