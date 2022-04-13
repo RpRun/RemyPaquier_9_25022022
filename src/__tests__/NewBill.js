@@ -13,8 +13,6 @@
  import mockStore from "../__mocks__/store"
 
  
-
-
  window.alert = jest.fn();
  
  describe("Given I am connected as an employee", () => {
@@ -39,8 +37,7 @@
      test("Then the title 'Envoyer une note de frais' should be displayed", async () => {
    
       const html = NewBillUI()
-      document.body.innerHTML = html
-         
+      document.body.innerHTML = html         
       Object.defineProperty(window, 'localStorage', { value: localStorageMock })  
       window.localStorage.setItem('user', JSON.stringify({ type: 'Employee' }))
 
@@ -63,19 +60,18 @@
        Object.defineProperty(window, 'localStorage', { value: localStorageMock })   
        window.localStorage.setItem('user', JSON.stringify({ type: 'Employee' }))
  
-       const NewBillController = new NewBill( { document, onNavigate, store: null, localStorage: window.localStorage } )
-      
-       // ======================================
-       // input file
+       const NewBillController = new NewBill( { document, onNavigate, store: null, localStorage: window.localStorage } )     
+       
+      // input file
        const file = new File(['dummy content'], 'example.jpg', {type: 'image/jpg'})
        const handleChangeFile  = jest.fn(NewBillController.handleChangeFile)  
        const inputFile = screen.getByTestId('file')
        Object.defineProperty(inputFile, 'files', { value: [file] })
-
-        // ======================================
-       // error message
+      // ======================================
+        
+      // error message
        const errorMessage = jest.fn(window.alert('Invalid file type'));  
- 
+      // ======================================
        inputFile.addEventListener("change", handleChangeFile)
        fireEvent.change(inputFile)
     
@@ -101,8 +97,7 @@
            
        // input file
        const file = new File(['test file'], 'example.pdf', {type: 'text/pdf'})
-       const handleChangeFile  = jest.fn(NewBillController.handleChangeFile)
-   
+       const handleChangeFile  = jest.fn(NewBillController.handleChangeFile) 
        const inputFile = screen.getByTestId('file')
        Object.defineProperty(inputFile, 'files', { value: [file] })
    
@@ -122,8 +117,7 @@
      test("then it should have been loaded in the input ", () => {
        
        const html = NewBillUI()
-       document.body.innerHTML = html
-          
+       document.body.innerHTML = html         
        Object.defineProperty(window, 'localStorage', { value: localStorageMock })   
        window.localStorage.setItem('user', JSON.stringify({ type: 'Employee' }))
        
@@ -132,25 +126,21 @@
  
        expect(inputCommentary.value).toBe('Hello')
       
-     })
-   
+     })  
    })  
    
    describe('When I am submitting a bill', () => {
      test("My form should be submitted and i should be sent to bills page", () => {
        // On fabrique la page
        const html = NewBillUI()
-       document.body.innerHTML = html
-     
+       document.body.innerHTML = html    
        const onNavigate = (pathname) => { document.body.innerHTML = ROUTES({ pathname })} 
        // localStorageMock necessaire?
-       //*************************************************************************** */
        // Object.defineProperty(window, 'localStorage', { value: localStorageMock })  
        window.localStorage.setItem('user', JSON.stringify({ type: 'Employee' }))
  
        const NewBillController = new NewBill({ document, onNavigate, store: null, localStorage: window.localStorage })
  
-      //  const newBillForm = document.querySelector(`form`)
        const newBillForm = screen.getByTestId('form-new-bill')
        const updateBill = jest.fn(NewBillController.updateBill)
  
@@ -162,7 +152,7 @@
        const newBillButton = screen.getByTestId('btn-new-bill')
 
        // On verifie qu on est bien revenu sur la page newbill     
-       expect (newBillButton).toBeTruthy()
+       expect(newBillButton).toBeTruthy()
        expect(screen.getAllByText('Mes notes de frais')).toBeTruthy()
      })
    })
@@ -228,7 +218,7 @@ describe('Given I am a user connected as Employee', () => {
 
     })
 
-    //Error 404 
+    // Erreur 404 
     describe('When an error occurs on API', () => {
       test('create bills from an API and fails with 404 message error', async () => {
         mockStore.bills.mockImplementationOnce(() => {
@@ -245,7 +235,7 @@ describe('Given I am a user connected as Employee', () => {
         expect(errorMessage).toBeTruthy()
       })
 
-      //Error 500 
+      // Erreur 500 
       test('fetches messages from an API and fails with 500 message error', async () => {
         mockStore.bills.mockImplementationOnce(() => {
           return {

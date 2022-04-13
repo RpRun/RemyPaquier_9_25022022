@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { fireEvent, screen, waitFor,  } from "@testing-library/dom"
+import { screen, waitFor } from "@testing-library/dom"
 import userEvent from '@testing-library/user-event'
 import BillsUI from "../views/BillsUI.js"
 import Bills from "../containers/Bills.js";
@@ -110,17 +110,7 @@ describe("Given I am connected as an employee", () => {
         });
       });
     })  
-      /******************************************************************** */
-    // describe('When I am on Bills page and there are 4 bills', () => {
-    //   test('Then, 4 bills should be shown', () => {
-    //     document.body.innerHTML = BillsUI({ data: bills })
-       
-    //     const billsList = screen.queryByTestId("tbody")
-             
-    //     expect(billsList.length = 4).toBeTruthy()
-    //   })
-    // })
-    /******************************************************************** */  
+
   })
 
 })
@@ -158,6 +148,8 @@ describe("Given I am a user connected as Employee", () => {
           document.body.appendChild(root)
           router()
         })
+
+        // erreur 404
         test("fetches bills from an API and fails with 404 message error", async () => {
 
           mockStore.bills.mockImplementationOnce(() => {
@@ -171,7 +163,8 @@ describe("Given I am a user connected as Employee", () => {
           const message = await screen.getByText(/Erreur 404/)
           expect(message).toBeTruthy()
         })
-
+        
+        // erreur 500
         test("fetches messages from an API and fails with 500 message error", async () => {
 
           mockStore.bills.mockImplementationOnce(() => {

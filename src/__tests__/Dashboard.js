@@ -256,7 +256,7 @@ describe("Given I am a user connected as Admin", () => {
       const contentPending  = await screen.getByText("En attente (1)")
       expect(contentPending).toBeTruthy()
       const contentRefused  = await screen.getByText("Refusé (3)")
-      //**************************** */
+      // Ajout d'une bill refused suite à la copie dans fixtures
       expect(contentRefused).toBeTruthy()
       expect(screen.getByTestId("big-billed-icon")).toBeTruthy()
     })
@@ -277,6 +277,7 @@ describe("Given I am a user connected as Admin", () => {
       document.body.appendChild(root)
       router()
     })
+    // erreur 400
     test("fetches bills from an API and fails with 404 message error", async () => {
 
       mockStore.bills.mockImplementationOnce(() => {
@@ -291,6 +292,7 @@ describe("Given I am a user connected as Admin", () => {
       expect(message).toBeTruthy()
     })
 
+    // erreur 500
     test("fetches messages from an API and fails with 500 message error", async () => {
 
       mockStore.bills.mockImplementationOnce(() => {
